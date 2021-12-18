@@ -1,0 +1,85 @@
+#!/bin/bash
+
+
+function download() {
+    url="https://opendata.rapid7.com"
+    filename=`curl -s "$url/sonar.fdns_v2/" | grep -oP 'sonar.*?cname.json.gz'`
+    target="$url/$filename"
+    echo "[+] Downloading file '$target'"
+    echo
+    wget "$target"
+}
+
+
+function list() {
+    local provider="$1"
+    if [ "$provider" != "" ]; then
+        local regex="^(`echo -n "$providers" | tr '\n' '|'`)$"
+        if grep -qP "$regex" <<< "$provider"; then
+            . $directory/$provider
+            echo "${!provider}" | grep -v '^$'
+        fi
+    else
+        for p in $providers; do echo $p; done
+    fi
+}
+
+
+function load() {
+    directory="providers"
+    providers=`ls $directory`
+
+    for p in $providers; do . $directory/$p; done
+}
+
+
+function search() {
+    local submode="$1"
+    local pattern="$2"
+    local filename="$3"
+    local filter=""
+    local regex="^(`echo -n "$providers" | tr '\n' '|'`)$"
+
+    if [ "$submode" == "all" ]; then
+        for p in $providers; do
+            echo "[+] $p"
+            search "$p" "$pattern" "$filename"
+        done
+        return
+    
+    elif grep -qP "$regex" <<< "$submode"; then
+        local subdomains=`echo "${!submode}" | grep -v '^$' | tr '\n' '|' | head -c -1`
+        filter="($subdomains)\.?"
+
+    elif [ "$submode" != "open" ]; then
+        return
+
+    fi
+
+    cat "$filename" \
+    | gunzip \
+    | grep --line-buffered -P "$pattern" \
+    | grep --line-buffered -P "$filter" \
+    | awk -W interactive -F '"' '{print $8" -> "$16}'
+}
+
+
+load
+
+mode="$1"
+
+case "$mode" in
+    download)
+        $mode
+        ;;
+    list)
+        provider="$2" 
+        $mode "$provider"
+        ;;
+    search)
+        submode="$2" 
+        pattern="$3"
+        filename="$4"
+        $mode "$submode" "$pattern" "$filename"
+        ;;
+esac
