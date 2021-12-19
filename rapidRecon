@@ -60,8 +60,8 @@ function search() {
 
     cat "$filename" \
     | gunzip \
-    | grep --line-buffered -P "$pattern" \
     | grep --line-buffered -P "$filter" \
+    | grep --line-buffered -P "$pattern" \
     | awk -W interactive -F '"' '{print $8" -> "$16}'
 }
 
