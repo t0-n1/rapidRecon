@@ -2,9 +2,10 @@
 
 
 function download() {
-    url="https://opendata.rapid7.com"
-    filename=`curl -s "$url/sonar.fdns_v2/" | grep -oP 'sonar.*?cname.json.gz'`
-    target="$url/$filename"
+    local url="https://opendata.rapid7.com"
+    local filename=`curl -s "$url/sonar.fdns_v2/" | grep -oP 'sonar.*?cname.json.gz'`
+
+    local target="$url/$filename"
     echo "[+] Downloading file '$target'"
     echo
     wget "$target"
@@ -13,11 +14,10 @@ function download() {
 
 function list() {
     local provider="$1"
+
     if [ "$provider" != "" ]; then
-        local regex="^(`echo -n "$providers" | tr '\n' '|'`)$"
         if grep -qP "$regex" <<< "$provider"; then
-            . $directory/$provider
-            echo "${!provider}" | grep -v '^$'
+            echo "${!provider}"
         fi
     else
         for p in $providers; do echo $p; done
@@ -28,8 +28,11 @@ function list() {
 function load() {
     directory="providers"
     providers=`ls $directory`
+    regex="^(`echo -n "$providers" | tr '\n' '|'`)$"
 
-    for p in $providers; do . $directory/$p; done
+    for p in $providers; do
+        declare -g "$p=`cat $directory/$p`"
+    done
 }
 
 
@@ -38,7 +41,6 @@ function search() {
     local pattern="$2"
     local filename="$3"
     local filter=""
-    local regex="^(`echo -n "$providers" | tr '\n' '|'`)$"
 
     if [ "$submode" == "all" ]; then
         for p in $providers; do

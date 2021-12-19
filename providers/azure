@@ -1,6 +1,3 @@
-# https://docs.microsoft.com/en-us/azure/active-directory/app-proxy/application-proxy-configure-custom-domain
-
-azure="
 accesscontrol.windows.net
 azure-api.net
 azurecontainer.io
@@ -34,4 +31,3 @@ trafficmanager.net
 vault.azure.net
 visualstudio.com
 vo.msecnd.net
-"
