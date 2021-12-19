@@ -23,14 +23,15 @@ $ ./rapidRecon list [provider]
 
 ### search
 
-Search for a pattern in the CNAMEs file.
-Three submodes of operation:
+Search for a pattern in the CNAMEs file. Three submodes of operation:
 - all: iterate all providers and for each one filter by provider subdomains before searching for the pattern.
 - "provider": filter by provider subdomains before searching for the pattern.
 - open: search directly for the pattern.
 
+Set COLOR=true to highlight the filter and pattern results.
+
 ```
-$ ./rapidRecon search all <pattern> <file>
-$ ./rapidRecon search <provider> <pattern> <file>
-$ ./rapidRecon search open <pattern> <file>
+$ [COLOR=true] ./rapidRecon search all <pattern> <file>
+$ [COLOR=true] ./rapidRecon search <provider> <pattern> <file>
+$ [COLOR=true] ./rapidRecon search open <pattern> <file>
 ```
