@@ -2,13 +2,22 @@
 
 
 function download() {
-    local url="https://opendata.rapid7.com"
-    local filename=`curl -s "$url/sonar.fdns_v2/" | grep -oP 'sonar.*?cname.json.gz'`
+    local records="^(a|aaaa|any|caa|cname|mx|ns|txt)$"
+    local record="$1"
 
-    local target="$url/$filename"
-    echo "[+] Downloading file '$target'"
-    echo
-    wget "$target"
+    if [ "$record" == "" ]; then
+        record="cname"
+    fi
+
+    if grep -qP "$records" <<< "$record"; then
+        local url="https://opendata.rapid7.com"
+        local filename=`curl -s "$url/sonar.fdns_v2/" | grep -oP "sonar.*?_$record.json.gz"`
+
+        local target="$url/$filename"
+        echo "[+] Downloading $record file '$target'"
+        echo
+        wget "$target"
+    fi
 }
 
 
@@ -75,14 +84,15 @@ mode="$1"
 
 case "$mode" in
     download)
-        $mode
+        record="$2"
+        $mode "$record"
         ;;
     list)
-        provider="$2" 
+        provider="$2"
         $mode "$provider"
         ;;
     search)
-        submode="$2" 
+        submode="$2"
         pattern="$3"
         filename="$4"
         $mode "$submode" "$pattern" "$filename"
