@@ -24,7 +24,8 @@ $ ./rapidRecon list [provider]
 
 ### search
 
-Search for a pattern in the DNS record file. Three submodes of operation:
+Search for a pattern in the DNS record file, which can reside locally on disk or remotely (fileless).
+Three submodes of operation:
 - all: iterate all providers and for each one filter by provider subdomains before searching for the pattern.
 - &lt;provider&gt;: filter by provider subdomains before searching for the pattern.
 - open: search directly for the pattern.
@@ -32,7 +33,7 @@ Search for a pattern in the DNS record file. Three submodes of operation:
 Set COLOR=true to highlight the filter and pattern results.
 
 ```
-$ [COLOR=true] ./rapidRecon search all <pattern> <file>
-$ [COLOR=true] ./rapidRecon search <provider> <pattern> <file>
-$ [COLOR=true] ./rapidRecon search open <pattern> <file>
+$ [COLOR=true] ./rapidRecon search all <pattern> <file|URL>
+$ [COLOR=true] ./rapidRecon search <provider> <pattern> <file|URL>
+$ [COLOR=true] ./rapidRecon search open <pattern> <file|URL>
 ```

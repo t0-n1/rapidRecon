@@ -50,6 +50,7 @@ function search() {
     local pattern="$2"
     local filename="$3"
     local filter="$pattern"
+    local get="cat"
 
     if [ "$submode" == "all" ]; then
         for p in $providers; do
@@ -67,10 +68,12 @@ function search() {
 
     fi
 
+    if grep -qP "^http[s]?://" <<< "$filename"; then get="curl -L -s"; fi
+
     grep="grep"
     if [ "$COLOR" == "true" ]; then grep="$grep --color=always"; fi
 
-    cat "$filename" \
+    $get "$filename" \
     | gunzip \
     | $grep --line-buffered -P "$filter" \
     | $grep --line-buffered -P "$pattern" \
