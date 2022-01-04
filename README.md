@@ -25,6 +25,7 @@ $ ./rapidRecon list [provider]
 ### search
 
 Search for a pattern in the DNS record file, which can reside locally on disk or remotely (fileless).
+
 Three submodes of operation:
 - all: iterate all providers and for each one filter by provider subdomains before searching for the pattern.
 - &lt;provider&gt;: filter by provider subdomains before searching for the pattern.
