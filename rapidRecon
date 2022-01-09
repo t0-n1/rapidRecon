@@ -61,7 +61,7 @@ function search() {
     
     elif grep -qP "$regex" <<< "$submode"; then
         local subdomains=`echo "${!submode}" | grep -v '^$' | tr '\n' '|' | head -c -1`
-        filter="($subdomains)\.?"
+        filter="\.($subdomains)\.?"
 
     elif [ "$submode" != "open" ]; then
         return
